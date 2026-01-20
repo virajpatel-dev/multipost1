@@ -2,8 +2,11 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "node:http";
 import { storage } from "./storage";
 import { createPostSchema } from "@shared/schema";
+import { registerOAuthRoutes } from "./oauth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  registerOAuthRoutes(app);
+
   app.get("/api/health", (_req: Request, res: Response) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });

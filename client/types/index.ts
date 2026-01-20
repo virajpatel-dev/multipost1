@@ -9,6 +9,26 @@ export interface FacebookPage {
   picture?: string;
 }
 
+export interface OAuthTokens {
+  facebook?: {
+    accessToken: string;
+    userId: string;
+    pages: FacebookPage[];
+  };
+  instagram?: {
+    id: string;
+    username: string;
+    pageId: string;
+    pageAccessToken: string;
+  };
+  x?: {
+    accessToken: string;
+    refreshToken?: string;
+    userId: string;
+    username: string;
+  };
+}
+
 export interface ConnectedPlatform {
   platform: Platform;
   connected: boolean;

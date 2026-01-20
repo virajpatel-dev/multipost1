@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Pressable, Image, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Pressable, Image, ActivityIndicator, Alert, Platform as RNPlatform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
@@ -97,6 +97,12 @@ export default function LoginScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      const message = error instanceof Error ? error.message : "Login failed. Please try again.";
+      if (RNPlatform.OS === "web") {
+        window.alert(message);
+      } else {
+        Alert.alert("Login Error", message);
+      }
     } finally {
       setLoadingProvider(null);
     }
