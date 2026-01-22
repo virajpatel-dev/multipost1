@@ -63,7 +63,7 @@ export function registerOAuthRoutes(app: Express) {
         });
       }
 
-      const tokenUrl = new URL("https://graph.facebook.com/v19.0/oauth/access_token");
+      const tokenUrl = new URL("https://graph.facebook.com/v24.0/oauth/access_token");
       tokenUrl.searchParams.append("client_id", FACEBOOK_APP_ID);
       tokenUrl.searchParams.append("client_secret", FACEBOOK_APP_SECRET);
       tokenUrl.searchParams.append("redirect_uri", redirectUri);
@@ -77,7 +77,7 @@ export function registerOAuthRoutes(app: Express) {
 
       const tokenData: FacebookTokenResponse = await tokenResponse.json();
 
-      const longLivedTokenUrl = new URL("https://graph.facebook.com/v19.0/oauth/access_token");
+      const longLivedTokenUrl = new URL("https://graph.facebook.com/v24.0/oauth/access_token");
       longLivedTokenUrl.searchParams.append("grant_type", "fb_exchange_token");
       longLivedTokenUrl.searchParams.append("client_id", FACEBOOK_APP_ID);
       longLivedTokenUrl.searchParams.append("client_secret", FACEBOOK_APP_SECRET);
@@ -89,7 +89,7 @@ export function registerOAuthRoutes(app: Express) {
         : tokenData;
 
       const userResponse = await fetch(
-        `https://graph.facebook.com/v19.0/me?fields=id,name,email,picture.type(large)&access_token=${longLivedData.access_token}`
+        `https://graph.facebook.com/v24.0/me?fields=id,name,email,picture.type(large)&access_token=${longLivedData.access_token}`
       );
       if (!userResponse.ok) {
         return res.status(400).json({ error: "Failed to fetch user info" });
@@ -97,7 +97,7 @@ export function registerOAuthRoutes(app: Express) {
       const userData: FacebookUserResponse = await userResponse.json();
 
       const pagesResponse = await fetch(
-        `https://graph.facebook.com/v19.0/me/accounts?fields=id,name,access_token,picture.type(large)&access_token=${longLivedData.access_token}`
+        `https://graph.facebook.com/v24.0/me/accounts?fields=id,name,access_token,picture.type(large)&access_token=${longLivedData.access_token}`
       );
       const pagesData: FacebookPageResponse = pagesResponse.ok
         ? await pagesResponse.json()
@@ -107,7 +107,7 @@ export function registerOAuthRoutes(app: Express) {
       for (const page of pagesData.data) {
         try {
           const igResponse = await fetch(
-            `https://graph.facebook.com/v19.0/${page.id}?fields=instagram_business_account{id,username}&access_token=${page.access_token}`
+            `https://graph.facebook.com/v24.0/${page.id}?fields=instagram_business_account{id,username}&access_token=${page.access_token}`
           );
           if (igResponse.ok) {
             const igData: InstagramAccountResponse = await igResponse.json();
@@ -236,14 +236,14 @@ export function registerOAuthRoutes(app: Express) {
         return res.status(400).json({ error: "Missing page credentials" });
       }
 
-      let endpoint = `https://graph.facebook.com/v19.0/${pageId}/feed`;
+      let endpoint = `https://graph.facebook.com/v24.0/${pageId}/feed`;
       const params: Record<string, string> = {
         access_token: pageAccessToken,
         message: message,
       };
 
       if (mediaUrl) {
-        endpoint = `https://graph.facebook.com/v19.0/${pageId}/photos`;
+        endpoint = `https://graph.facebook.com/v24.0/${pageId}/photos`;
         params.url = mediaUrl;
       }
 
@@ -275,7 +275,7 @@ export function registerOAuthRoutes(app: Express) {
       }
 
       const containerResponse = await fetch(
-        `https://graph.facebook.com/v19.0/${instagramAccountId}/media`,
+        `https://graph.facebook.com/v24.0/${instagramAccountId}/media`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -298,7 +298,7 @@ export function registerOAuthRoutes(app: Express) {
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
       const publishResponse = await fetch(
-        `https://graph.facebook.com/v19.0/${instagramAccountId}/media_publish`,
+        `https://graph.facebook.com/v24.0/${instagramAccountId}/media_publish`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
