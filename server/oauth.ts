@@ -358,6 +358,9 @@ export function registerOAuthRoutes(app: Express) {
   });
 
   app.get("/api/oauth/config", (_req: Request, res: Response) => {
+
+    const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
+  const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
     res.json({
       facebook: {
         configured: !!(FACEBOOK_APP_ID && FACEBOOK_APP_SECRET),

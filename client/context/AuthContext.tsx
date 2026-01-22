@@ -53,10 +53,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [oauthConfig, setOauthConfig] = useState<AuthContextType["oauthConfig"]>(null);
 
   const apiUrl = getApiUrl();
-  const redirectUri = AuthSession.makeRedirectUri({
-    scheme: "multipost",
-    path: "oauth",
-  });
+  console.log("API BASE URL =", apiUrl);
+
+  const redirectUri = `${apiUrl}/oauth/facebook`;
 
   useEffect(() => {
     loadUser();

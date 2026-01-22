@@ -3,6 +3,21 @@ import type { Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import * as fs from "fs";
 import * as path from "path";
+import dotenv from "dotenv";
+
+
+const ENV_PATH = path.join(
+  process.cwd().replace(/\/server$/, ""),
+  ".env"
+);
+
+dotenv.config({ path: ENV_PATH });
+
+console.log("ENV PATH USED =", ENV_PATH);
+console.log("FACEBOOK_APP_ID =", process.env.FACEBOOK_APP_ID);
+console.log("FACEBOOK_APP_SECRET =", process.env.FACEBOOK_APP_SECRET ? "SET" : "NOT SET");
+
+
 
 const app = express();
 const log = console.log;
@@ -162,8 +177,6 @@ function serveLandingPage({
 
 function configureExpoAndLanding(app: express.Application) {
   const templatePath = path.resolve(
-    process.cwd(),
-    "server",
     "templates",
     "landing-page.html",
   );
@@ -231,6 +244,20 @@ function setupErrorHandler(app: express.Application) {
   setupRequestLogging(app);
 
   configureExpoAndLanding(app);
+  
+  app.get("/oauth/facebook", (req: Request, res: Response) => {
+    const { code, error } = req.query;
+
+    if (error) {
+      return res.redirect(`multipost://oauth?error=${error}`);
+    }
+
+    if (!code) {
+      return res.status(400).send("No code received from Facebook");
+    }
+
+    return res.redirect(`multipost://oauth?code=${code}`);
+  });
 
   const server = await registerRoutes(app);
 
